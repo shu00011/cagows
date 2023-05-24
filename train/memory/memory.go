@@ -2,6 +2,7 @@ package memory
 
 import (
 	"errors"
+	"fmt"
 	"sort"
 	"sync"
 
@@ -52,8 +53,10 @@ func (m *TodoMemory) Get(id int) (*model.Todo, error) {
 }
 
 func (m *TodoMemory) Add(todo *model.Todo) *model.Todo {
-	// TODO: 排他制御を書いてみよう
-
+	// TODO: 排他制御（ロック）を書いてみよう
+	m.Lock()
+	// deferはreturnのあとに実行される
+	defer m.Unlock()
 	id := len(m.mem) + 1
 	todo.ID = id
 	m.mem[id] = todo
@@ -65,7 +68,11 @@ func (m *TodoMemory) Complete(id int) error {
 	defer m.Unlock()
 
 	// TODO: 存在しなかったらエラーを返そう
-
+	todo, ok := m.mem[id]
+	if !ok {
+		return fmt.Errorf("not found: id = %d", id)
+	}
 	// TODO: 存在していたらCompletedをtrueにしよう
+	todo.Completed = true
 	return nil
 }

@@ -57,6 +57,7 @@ func (h *handler) Get() http.HandlerFunc {
 	}
 }
 
+// reqでもらったtodoをgoの値で扱えるように変えて、
 func (h *handler) Add() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var todo model.Todo
